@@ -92,8 +92,8 @@ export default class UserController {
   @errorHandler
   async changeRole(req: ModifiedRequest, res: Response) {
     const { _id, role } = req.body
-    await userService.change(_id, role)
-    return res.json(role)
+    const user = await userService.change(_id, role)
+    return res.json(user)
   }
 
   @errorHandler
