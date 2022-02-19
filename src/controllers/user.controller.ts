@@ -1,5 +1,4 @@
 import jwt from 'jsonwebtoken';
-import ApiError from '../errors/api.error';
 import { hash, compareSync } from 'bcrypt';
 import {
   basketService,
@@ -18,6 +17,7 @@ import { EndPoint, ErrorMessage, Role, Selector } from '../shared/enums';
 import { BasketPopulated, OrderPopulated, User } from '../shared/models';
 import { auth, errorHandler } from '../shared/decorators';
 import { Controller, Delete, Get, Patch, Post } from '../core/decorators';
+import { ApiError } from '../helpers';
 
 const generateToken = (user: UserToken) => {
   return jwt.sign(

@@ -1,10 +1,10 @@
 import { Request, Response } from 'express';
 import { Middleware, ModifiedRequest, UserToken } from './types';
-import ApiError from '../errors/api.error';
 import { ErrorMessage } from './enums';
 import { LOCAL_JWT_SECRET } from './constants';
 const secret: string = process.env.JWT_SECRET || LOCAL_JWT_SECRET;
 import jwt from 'jsonwebtoken';
+import { ApiError } from '../helpers';
 
 export const errorHandler = (
   _: any,

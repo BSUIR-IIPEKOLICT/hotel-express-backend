@@ -1,6 +1,6 @@
-import ApiError from '../errors/api.error';
 import { ErrorMessage } from '../shared/enums';
 import { Request, Response } from 'express';
+import ApiError from './api.error';
 
 export default function errorMiddleware(
   err: Error,

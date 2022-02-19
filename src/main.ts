@@ -2,12 +2,11 @@ import { config } from 'dotenv';
 import 'reflect-metadata';
 import * as http from 'http';
 import App from './core/app';
-import { connect } from './helpers';
+import { connect, errorMiddleware } from './helpers';
 import { bootstrap } from './core/helpers';
 import { LOCAL_PORT } from './shared/constants';
 import express, { Application } from 'express';
 import { apiControllers } from './controllers';
-import { errorMiddleware } from './middleware';
 import cors from 'cors';
 
 config();
