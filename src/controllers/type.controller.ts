@@ -9,21 +9,22 @@ import {
 import { ModifiedRequest } from '../shared/types';
 import { Response } from 'express';
 import { OrderPopulated, RoomPopulated, Type } from '../shared/models';
-import { auth, errorHandler } from '../shared/decorators';
+import { auth, safeCall } from '../shared/decorators';
 import { EndPoint, Role, Selector } from '../shared/enums';
 import { Controller, Delete, Get, Patch, Post } from '../core/decorators';
+import { BaseController } from '../core/abstractions';
 
 @Controller(EndPoint.Types)
-export default class TypeController {
+export default class TypeController extends BaseController {
   @Get()
   async get(req: ModifiedRequest, res: Response) {
-    const types: Type[] = await typeService.get();
+    const types: Type[] = await typeService.getAll();
     return res.json(types);
   }
 
   @Post()
   @auth(Role.Admin)
-  @errorHandler
+  @safeCall()
   async create(req: ModifiedRequest, res: Response) {
     const { _services, name, places } = req.body;
     const type: Type = await typeService.create(_services, name, places);
@@ -32,7 +33,7 @@ export default class TypeController {
 
   @Patch(Selector.Id)
   @auth(Role.Admin)
-  @errorHandler
+  @safeCall()
   async change(req: ModifiedRequest, res: Response) {
     const { _services, name, places } = req.body;
     const type: Type = await typeService.change(
@@ -46,7 +47,7 @@ export default class TypeController {
 
   @Delete(Selector.Id)
   @auth(Role.Admin)
-  @errorHandler
+  @safeCall()
   async delete(req: ModifiedRequest, res: Response) {
     const id: string = await typeService.delete(req.params._id);
     const rooms: RoomPopulated[] = await roomService.get({ _type: id });
@@ -57,7 +58,9 @@ export default class TypeController {
       await buildingService.removeRoom(room._id);
 
       if (room._order) {
-        const order: OrderPopulated = await orderService.getOne(room._order);
+        const order: OrderPopulated = await orderService.getOnePopulated(
+          room._order
+        );
         await basketService.removeOrder(order);
         await orderService.delete(room._order);
       }

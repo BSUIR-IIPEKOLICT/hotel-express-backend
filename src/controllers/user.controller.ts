@@ -1,4 +1,3 @@
-import jwt from 'jsonwebtoken';
 import { hash, compareSync } from 'bcrypt';
 import {
   basketService,
@@ -7,40 +6,29 @@ import {
   userService,
 } from '../services';
 import {
-  LOCAL_JWT_SECRET,
   MIN_EMAIL_CHUNKS_AMOUNT,
   MIN_PASSWORD_LENGTH,
 } from '../shared/constants';
-import { ModifiedRequest, UserToken } from '../shared/types';
+import { ModifiedRequest } from '../shared/types';
 import { Response } from 'express';
 import { EndPoint, ErrorMessage, Role, Selector } from '../shared/enums';
 import { BasketPopulated, OrderPopulated, User } from '../shared/models';
-import { auth, errorHandler } from '../shared/decorators';
+import { auth, safeCall } from '../shared/decorators';
 import { Controller, Delete, Get, Patch, Post } from '../core/decorators';
-import { ApiError } from '../helpers';
-
-const generateToken = (user: UserToken) => {
-  return jwt.sign(
-    {
-      _id: user._id,
-      email: user.email,
-      role: user.role,
-    },
-    process.env.JWT_SECRET || LOCAL_JWT_SECRET,
-    { expiresIn: '24h' }
-  );
-};
+import { ApiError, generateToken } from '../helpers';
+import { BaseController } from '../core/abstractions';
 
 @Controller(EndPoint.Users)
-export default class UserController {
+export default class UserController extends BaseController {
   @Get()
   @auth(Role.Admin)
   async getAll(req: ModifiedRequest, res: Response) {
-    const users: User[] = await userService.get();
+    const users: User[] = await userService.getAll();
     return res.json(users);
   }
 
   @Post(EndPoint.Register)
+  @safeCall()
   async register(req: ModifiedRequest, res: Response, next) {
     const { email, password } = req.body;
 
@@ -77,6 +65,7 @@ export default class UserController {
   }
 
   @Post(EndPoint.Login)
+  @safeCall()
   async login(req: ModifiedRequest, res: Response, next) {
     const { email, password } = req.body;
     const user: User | undefined = await userService.getByEmail(email);
@@ -90,6 +79,7 @@ export default class UserController {
   }
 
   @Post(EndPoint.Auth)
+  @safeCall()
   async auth(req: ModifiedRequest, res: Response) {
     const user: User | undefined = await userService.getByEmail(req.user.email);
     if (!user) return;
@@ -98,7 +88,7 @@ export default class UserController {
 
   @Patch(Selector.Id)
   @auth(Role.Admin)
-  @errorHandler
+  @safeCall()
   async changeRole(req: ModifiedRequest, res: Response) {
     const user = await userService.change(req.params.id, req.body.role);
     return res.json(user);
@@ -106,12 +96,14 @@ export default class UserController {
 
   @Delete(Selector.Id)
   @auth(Role.Admin)
-  @errorHandler
+  @safeCall()
   async delete(req: ModifiedRequest, res: Response) {
     const user: User = await userService.getOne(req.params.id);
     const id: string = await userService.delete(req.params.id);
-    const basket: BasketPopulated = await basketService.getOne(user._id);
-    const orders: OrderPopulated[] = await orderService.get(basket._id);
+    const basket: BasketPopulated = await basketService.getOnePopulated(
+      user._id
+    );
+    const orders: OrderPopulated[] = await orderService.getByBasket(basket._id);
 
     orders.map(async ({ _room }) => await roomService.unBookRoom(_room._id));
 

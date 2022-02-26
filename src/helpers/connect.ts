@@ -4,7 +4,7 @@ import { LOCAL_MONGODB_URL, SUCCESS_CONNECT_MONGO } from '../shared/constants';
 
 config();
 
-export default function dbHelper(callback: () => void) {
+export default function connect(callback: () => void) {
   mongoose.connect(
     process.env.MONGODB_URI || LOCAL_MONGODB_URL,
     {

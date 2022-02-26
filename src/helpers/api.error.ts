@@ -1,4 +1,4 @@
-import { ErrorCode } from '../shared/enums';
+import { ErrorCode, ErrorMessage } from '../shared/enums';
 
 export default class ApiError extends Error {
   constructor(public status: number, public message: string) {
@@ -7,19 +7,23 @@ export default class ApiError extends Error {
     this.message = message;
   }
 
-  static authError(message): ApiError {
+  static badRequest(message: string = ErrorMessage.BadRequest): ApiError {
+    return new ApiError(ErrorCode.BadRequest, message);
+  }
+
+  static authError(message: string = ErrorMessage.Auth): ApiError {
     return new ApiError(ErrorCode.Unauthorized, message);
   }
 
-  static forbidden(message): ApiError {
+  static forbidden(message: string = ErrorMessage.Forbidden): ApiError {
     return new ApiError(ErrorCode.Forbidden, message);
   }
 
-  static badRequest(message): ApiError {
+  static notFound(message: string = ErrorMessage.NotFound): ApiError {
     return new ApiError(ErrorCode.NotFound, message);
   }
 
-  static internal(message): ApiError {
+  static internal(message: string = ErrorMessage.Internal): ApiError {
     return new ApiError(ErrorCode.InternalServerError, message);
   }
 }

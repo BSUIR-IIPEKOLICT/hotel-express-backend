@@ -10,12 +10,13 @@ import { Response } from 'express';
 import { GetRoomsDto } from '../shared/dtos';
 import { IQuery } from '../shared/interfaces';
 import { OrderPopulated, RoomPopulated } from '../shared/models';
-import { auth, errorHandler } from '../shared/decorators';
+import { auth, safeCall } from '../shared/decorators';
 import { Controller, Delete, Get, Patch, Post } from '../core/decorators';
 import { EndPoint, Role, Selector } from '../shared/enums';
+import { BaseController } from '../core/abstractions';
 
 @Controller(EndPoint.Rooms)
-export default class RoomController {
+export default class RoomController extends BaseController {
   @Get()
   async get(req: ModifiedRequest & GetRoomsDto, res: Response) {
     let { _building, _type, page, limit, isFree } = req.query;
@@ -50,7 +51,7 @@ export default class RoomController {
 
   @Post()
   @auth(Role.Admin)
-  @errorHandler
+  @safeCall()
   async create(req: ModifiedRequest, res: Response) {
     const room: RoomPopulated = await roomService.create(
       req.body._building,
@@ -62,11 +63,11 @@ export default class RoomController {
 
   @Patch(Selector.Id)
   @auth(Role.Admin)
-  @errorHandler
+  @safeCall()
   async change(req: ModifiedRequest, res: Response) {
     const { _building, _type } = req.body;
     const { id } = req.params;
-    const stock: RoomPopulated = await roomService.getOne(id);
+    const stock: RoomPopulated = await roomService.getOnePopulated(id);
     const room: RoomPopulated = await roomService.change(id, _building, _type);
 
     if (_building !== stock._building._id) {
@@ -79,15 +80,19 @@ export default class RoomController {
 
   @Delete(Selector.Id)
   @auth(Role.Admin)
-  @errorHandler
+  @safeCall()
   async delete(req: ModifiedRequest, res: Response) {
-    const room: RoomPopulated = await roomService.getOne(req.params.id);
+    const room: RoomPopulated = await roomService.getOnePopulated(
+      req.params.id
+    );
     await roomService.delete(room._id);
     await buildingService.removeRoom(room._id);
     await reviewService.deleteWithRoom(room._id);
 
     if (room._order) {
-      const order: OrderPopulated = await orderService.getOne(room._order);
+      const order: OrderPopulated = await orderService.getOnePopulated(
+        room._order
+      );
       await orderService.delete(room._order);
       await basketService.removeOrder(order._id);
     }

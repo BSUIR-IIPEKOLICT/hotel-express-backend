@@ -17,7 +17,7 @@ export default class RoomService extends RoomRepository {
       .lean();
   }
 
-  async getOne(_id: string): Promise<RoomPopulated> {
+  async getOnePopulated(_id: string): Promise<RoomPopulated> {
     return this.model
       .findById(_id)
       .populate('_type')
@@ -37,7 +37,7 @@ export default class RoomService extends RoomRepository {
       population: 0,
     });
     await room.save();
-    return this.getOne(room._id);
+    return this.getOnePopulated(room._id);
   }
 
   async change(
@@ -50,7 +50,7 @@ export default class RoomService extends RoomRepository {
         $set: { _building, _type },
       })
       .lean();
-    return this.getOne(_id);
+    return this.getOnePopulated(_id);
   }
 
   async bookRoom(roomId: string, orderId: string, population: number) {
@@ -64,11 +64,6 @@ export default class RoomService extends RoomRepository {
       $set: { isFree: true, population: 0 },
     });
     await this.model.findByIdAndUpdate(roomId, { $unset: { _order: '' } });
-  }
-
-  async delete(_id: string): Promise<string> {
-    await this.model.findByIdAndRemove(_id);
-    return _id;
   }
 
   async deleteWithBuilding(_building: string) {

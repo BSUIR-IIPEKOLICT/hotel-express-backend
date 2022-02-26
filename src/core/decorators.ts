@@ -2,16 +2,16 @@ import 'reflect-metadata';
 import { IRouter } from './interfaces';
 import { MetadataKey, Method } from './enums';
 
-export const Controller = (basePath?: string): ClassDecorator => {
+export const Controller = (basePath: string = ''): ClassDecorator => {
   return (target) => {
-    Reflect.defineMetadata(MetadataKey.BASE_PATH, `/${basePath || ''}`, target);
+    Reflect.defineMetadata(MetadataKey.BASE_PATH, `/${basePath}`, target);
   };
 };
 
 const methodDecoratorFactory = (method: Method) => {
-  return (path?: string): MethodDecorator => {
+  return (path: string = ''): MethodDecorator => {
     return (target: Object, propertyKey: string | symbol) => {
-      const controllerClass = target.constructor;
+      const controllerClass: Function = target.constructor;
 
       const routers: IRouter[] = Reflect.hasMetadata(
         MetadataKey.ROUTERS,
@@ -22,7 +22,7 @@ const methodDecoratorFactory = (method: Method) => {
 
       routers.push({
         method,
-        path: path || '',
+        path,
         handlerName: propertyKey,
       });
 

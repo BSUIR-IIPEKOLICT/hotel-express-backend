@@ -5,7 +5,6 @@ export async function bootstrap(
   try {
     await callback();
   } catch (e) {
-    console.log(`Server error: ${e.message}`);
-    process.exit(1);
+    console.error(`Server error: ${e.message}`);
   }
 }

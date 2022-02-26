@@ -2,21 +2,22 @@ import { orderService, serviceService, typeService } from '../services';
 import { ModifiedRequest } from '../shared/types';
 import { Response } from 'express';
 import { Service } from '../shared/models';
-import { auth, errorHandler } from '../shared/decorators';
+import { auth, safeCall } from '../shared/decorators';
 import { Controller, Delete, Get, Patch, Post } from '../core/decorators';
 import { EndPoint, Role, Selector } from '../shared/enums';
+import { BaseController } from '../core/abstractions';
 
 @Controller(EndPoint.Services)
-export default class ServiceController {
+export default class ServiceController extends BaseController {
   @Get()
   async get(req: ModifiedRequest, res: Response) {
-    const services: Service[] = await serviceService.get();
+    const services: Service[] = await serviceService.getAll();
     return res.json(services);
   }
 
   @Post()
   @auth(Role.Admin)
-  @errorHandler
+  @safeCall()
   async create(req: ModifiedRequest, res: Response) {
     const { name, price } = req.body;
     const service: Service = await serviceService.create(name, price);
@@ -25,7 +26,7 @@ export default class ServiceController {
 
   @Patch(Selector.Id)
   @auth(Role.Admin)
-  @errorHandler
+  @safeCall()
   async change(req: ModifiedRequest, res: Response) {
     const { name, price } = req.body;
     const service: Service = await serviceService.change(
@@ -38,7 +39,7 @@ export default class ServiceController {
 
   @Delete(Selector.Id)
   @auth(Role.Admin)
-  @errorHandler
+  @safeCall()
   async delete(req: ModifiedRequest, res: Response) {
     const id: string = await serviceService.delete(req.params.id);
     await typeService.removeService(id);

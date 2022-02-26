@@ -1,4 +1,5 @@
 export enum ErrorCode {
+  BadRequest = 400,
   Unauthorized = 401,
   Forbidden = 403,
   NotFound = 404,
@@ -15,6 +16,10 @@ export enum ErrorMessage {
   Password = 'Invalid password',
   BadPassword = 'Bad password, use at least 5 any symbols',
   BadEmail = 'Incorrect E-mail',
+  BadRequest = 'Bad request',
+  Forbidden = 'Forbidden',
+  Internal = 'Internal server error',
+  NotFound = 'Not found',
 }
 
 export enum EndPoint {
@@ -31,7 +36,6 @@ export enum EndPoint {
   Register = '/register',
   Login = '/login',
   Auth = '/auth',
-  Api = '/api',
 }
 
 export enum Selector {
@@ -40,4 +44,5 @@ export enum Selector {
 
 export enum Role {
   Admin = 'admin',
+  Client = 'client',
 }

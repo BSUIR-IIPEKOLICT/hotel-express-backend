@@ -2,10 +2,6 @@ import { TypeRepository } from '../shared/repositories';
 import { Type } from '../shared/models';
 
 export default class TypeService extends TypeRepository {
-  async get(): Promise<Type[]> {
-    return this.model.find({}).lean();
-  }
-
   async create(
     _services: string[],
     name: string,
@@ -36,10 +32,5 @@ export default class TypeService extends TypeRepository {
 
   async removeService(serviceId: string) {
     await this.model.updateMany({}, { $pull: { _services: serviceId } });
-  }
-
-  async delete(_id: string): Promise<string> {
-    await this.model.findByIdAndRemove(_id);
-    return _id;
   }
 }

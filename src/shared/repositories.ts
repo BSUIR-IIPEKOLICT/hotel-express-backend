@@ -1,32 +1,50 @@
 import {
-  BasketModel,
-  BuildingModel,
-  OrderModel,
-  ReviewModel,
-  RoomModel,
-  ServiceModel,
-  TypeModel,
-  UserModel,
+  Basket,
+  Building,
+  Order,
+  Review,
+  Room,
+  Service,
+  Type,
+  User,
 } from './models';
+import { Model } from 'mongoose';
 
 abstract class Repository<M> {
-  public constructor(protected readonly model: M) {
+  constructor(protected readonly model: Model<M>) {
     this.model = model;
+  }
+
+  async getAll(): Promise<M[]> {
+    return this.model.find({}).lean();
+  }
+
+  async getOne(_id: string): Promise<M> {
+    return this.model.findById(_id).lean();
+  }
+
+  async count(): Promise<number> {
+    return this.model.countDocuments();
+  }
+
+  async delete(_id: string): Promise<string> {
+    await this.model.findByIdAndRemove(_id);
+    return _id;
   }
 }
 
-export class BasketRepository extends Repository<BasketModel> {}
+export class BasketRepository extends Repository<Basket> {}
 
-export class BuildingRepository extends Repository<BuildingModel> {}
+export class BuildingRepository extends Repository<Building> {}
 
-export class OrderRepository extends Repository<OrderModel> {}
+export class OrderRepository extends Repository<Order> {}
 
-export class RoomRepository extends Repository<RoomModel> {}
+export class ReviewRepository extends Repository<Review> {}
 
-export class ServiceRepository extends Repository<ServiceModel> {}
+export class RoomRepository extends Repository<Room> {}
 
-export class TypeRepository extends Repository<TypeModel> {}
+export class ServiceRepository extends Repository<Service> {}
 
-export class UserRepository extends Repository<UserModel> {}
+export class TypeRepository extends Repository<Type> {}
 
-export class ReviewRepository extends Repository<ReviewModel> {}
+export class UserRepository extends Repository<User> {}

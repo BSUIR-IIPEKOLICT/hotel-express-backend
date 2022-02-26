@@ -6,9 +6,10 @@ import OrderController from './order.controller';
 import BasketController from './basket.controller';
 import UserController from './user.controller';
 import ReviewController from './review.controller';
-import { IController } from '../core/types';
+import TestController from './test.controller';
+import { ControllerClass } from '../core/types';
 
-export const apiControllers: IController[] = [
+export const apiControllers: ControllerClass[] = [
   UserController,
   BasketController,
   ReviewController,
@@ -17,4 +18,5 @@ export const apiControllers: IController[] = [
   RoomController,
   ServiceController,
   TypeController,
+  TestController,
 ];

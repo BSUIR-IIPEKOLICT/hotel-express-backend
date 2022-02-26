@@ -1,13 +1,7 @@
-import express, {
-  Application,
-  Handler,
-  Request,
-  Response,
-  Router,
-} from 'express';
+import express, { Application, Request, Response, Router } from 'express';
 import { MetadataKey } from './enums';
-import { IRouter } from './interfaces';
-import { IController } from './types';
+import { IController, IRouter } from './interfaces';
+import { ControllerClass, Info } from './types';
 
 export default class App {
   private readonly instance: Application;
@@ -18,7 +12,7 @@ export default class App {
 
   constructor(
     configureApp: (app: Application) => void = () => {},
-    controllers: IController[] = [],
+    controllers: ControllerClass[] = [],
     errorHandler?: (err: Error, req: Request, res: Response, next: any) => void
   ) {
     this.instance = express();
@@ -30,12 +24,11 @@ export default class App {
     }
   }
 
-  private registerRouters(controllers: IController[]) {
-    const info: Array<{ api: string; handler: string }> = [];
+  private registerRouters(controllers: ControllerClass[]) {
+    const info: Info[] = [];
 
     controllers.forEach((controllerClass) => {
-      const controllerInstance: { [handleName: string]: Handler } =
-        new controllerClass() as any;
+      const controllerInstance: IController = new controllerClass();
       const basePath: string = Reflect.getMetadata(
         MetadataKey.BASE_PATH,
         controllerClass

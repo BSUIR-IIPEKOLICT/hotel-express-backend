@@ -9,5 +9,3 @@ export type UserToken = {
 export type ModifiedRequest = Request & {
   user?: UserToken;
 };
-
-export type Middleware = (e: Error) => void;

@@ -2,11 +2,7 @@ import { Building, BuildingPopulated } from '../shared/models';
 import { BuildingRepository } from '../shared/repositories';
 
 export default class BuildingService extends BuildingRepository {
-  async get(): Promise<Building[]> {
-    return this.model.find({}).lean();
-  }
-
-  async getOne(_id: string): Promise<BuildingPopulated> {
+  async getOnePopulated(_id: string): Promise<BuildingPopulated> {
     return this.model.findById(_id).populate('_rooms').lean();
   }
 
@@ -35,10 +31,5 @@ export default class BuildingService extends BuildingRepository {
 
   async removeRoom(roomId: string) {
     await this.model.updateMany({}, { $pull: { _rooms: roomId } });
-  }
-
-  async delete(_id: string): Promise<string> {
-    await this.model.findByIdAndRemove(_id);
-    return _id;
   }
 }

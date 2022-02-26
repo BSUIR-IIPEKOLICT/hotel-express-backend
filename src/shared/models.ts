@@ -1,4 +1,4 @@
-import { Document, Model, Types } from 'mongoose';
+import { Document, Types } from 'mongoose';
 
 export type Basket = Document & {
   _user: Types.ObjectId;
@@ -49,22 +49,6 @@ export type Review = Document & {
   author: string;
   content: string;
 };
-
-export type BasketModel = Model<Basket>;
-
-export type BuildingModel = Model<Building>;
-
-export type OrderModel = Model<Order>;
-
-export type RoomModel = Model<Room>;
-
-export type ServiceModel = Model<Service>;
-
-export type TypeModel = Model<Type>;
-
-export type UserModel = Model<User>;
-
-export type ReviewModel = Model<Review>;
 
 export type BasketPopulated = Document & {
   _user: User;

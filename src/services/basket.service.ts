@@ -2,11 +2,11 @@ import { BasketPopulated, OrderPopulated } from '../shared/models';
 import { BasketRepository } from '../shared/repositories';
 
 export default class BasketService extends BasketRepository {
-  async get(): Promise<BasketPopulated[]> {
+  async getAllPopulated(): Promise<BasketPopulated[]> {
     return this.model.find({}).populate('_user').populate('_orders').lean();
   }
 
-  async getOne(_user: string): Promise<BasketPopulated> {
+  async getOnePopulated(_user: string): Promise<BasketPopulated> {
     return this.model
       .findOne({ _user })
       .populate('_user')
@@ -17,7 +17,7 @@ export default class BasketService extends BasketRepository {
   async create(_user: string): Promise<BasketPopulated> {
     const basket = await new this.model({ _user });
     await basket.save();
-    return this.getOne(_user);
+    return this.getOnePopulated(_user);
   }
 
   async addOrder(basketId: string, orderId: string) {
@@ -31,10 +31,5 @@ export default class BasketService extends BasketRepository {
       { _id: order._basket },
       { $pull: { _orders: order._id } }
     );
-  }
-
-  async delete(_id: string): Promise<string> {
-    await this.model.findByIdAndRemove(_id);
-    return _id;
   }
 }

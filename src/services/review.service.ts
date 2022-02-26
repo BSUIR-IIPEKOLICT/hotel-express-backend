@@ -6,10 +6,6 @@ export default class ReviewService extends ReviewRepository {
     return this.model.find({ _room }).lean();
   }
 
-  async getOne(_id: string): Promise<Review> {
-    return this.model.findById(_id).lean();
-  }
-
   async create(
     _room: string,
     author: string,
@@ -25,11 +21,6 @@ export default class ReviewService extends ReviewRepository {
       $set: { content },
     });
     return this.getOne(_id);
-  }
-
-  async delete(_id: string): Promise<string> {
-    await this.model.findByIdAndRemove(_id);
-    return _id;
   }
 
   async deleteWithRoom(roomId: string): Promise<void> {
