@@ -18,7 +18,7 @@ import { BaseController } from '../core/abstractions';
 @Controller(EndPoint.Rooms)
 export default class RoomController extends BaseController {
   @Get()
-  async get(req: ModifiedRequest & GetRoomsDto, res: Response) {
+  async getAll(req: ModifiedRequest & GetRoomsDto, res: Response) {
     let { _building, _type, page, limit, isFree } = req.query;
 
     if (typeof page === 'string') {

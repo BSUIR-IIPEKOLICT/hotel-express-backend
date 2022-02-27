@@ -3,14 +3,14 @@ import { ModifiedRequest } from '../shared/types';
 import { Response } from 'express';
 import { Service } from '../shared/models';
 import { auth, safeCall } from '../shared/decorators';
-import { Controller, Delete, Get, Patch, Post } from '../core/decorators';
+import { Controller, Delete, Get, Post, Put } from '../core/decorators';
 import { EndPoint, Role, Selector } from '../shared/enums';
 import { BaseController } from '../core/abstractions';
 
 @Controller(EndPoint.Services)
 export default class ServiceController extends BaseController {
   @Get()
-  async get(req: ModifiedRequest, res: Response) {
+  async getAll(req: ModifiedRequest, res: Response) {
     const services: Service[] = await serviceService.getAll();
     return res.json(services);
   }
@@ -24,7 +24,7 @@ export default class ServiceController extends BaseController {
     return res.json(service);
   }
 
-  @Patch(Selector.Id)
+  @Put(Selector.Id)
   @auth(Role.Admin)
   @safeCall()
   async change(req: ModifiedRequest, res: Response) {

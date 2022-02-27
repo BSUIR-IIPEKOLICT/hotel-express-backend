@@ -11,7 +11,7 @@ import { BaseController } from '../core/abstractions';
 @Controller(EndPoint.Reviews)
 export default class ReviewController extends BaseController {
   @Get()
-  async get(req: ModifiedRequest & GetBookReviewDto, res: Response) {
+  async getByRoom(req: ModifiedRequest & GetBookReviewDto, res: Response) {
     const reviews: Review[] = await reviewService.getByRoom(req.query._room);
     return res.json(reviews);
   }

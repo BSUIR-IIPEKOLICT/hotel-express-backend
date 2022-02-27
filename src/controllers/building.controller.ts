@@ -17,7 +17,7 @@ import { BaseController } from '../core/abstractions';
 @Controller(EndPoint.Buildings)
 export default class BuildingController extends BaseController {
   @Get()
-  async get(req: ModifiedRequest, res: Response) {
+  async getAll(req: ModifiedRequest, res: Response) {
     const buildings: Building[] = await buildingService.getAll();
     return res.json(buildings);
   }

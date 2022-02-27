@@ -79,6 +79,7 @@ export default class UserController extends BaseController {
   }
 
   @Post(EndPoint.Auth)
+  @auth()
   @safeCall()
   async auth(req: ModifiedRequest, res: Response) {
     const user: User | undefined = await userService.getByEmail(req.user.email);

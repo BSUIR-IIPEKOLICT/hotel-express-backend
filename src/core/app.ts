@@ -1,4 +1,10 @@
-import express, { Application, Request, Response, Router } from 'express';
+import express, {
+  Application,
+  NextFunction,
+  Request,
+  Response,
+  Router,
+} from 'express';
 import { MetadataKey } from './enums';
 import { IController, IRouter } from './interfaces';
 import { ControllerClass, Info } from './types';
@@ -13,7 +19,12 @@ export default class App {
   constructor(
     configureApp: (app: Application) => void = () => {},
     controllers: ControllerClass[] = [],
-    errorHandler?: (err: Error, req: Request, res: Response, next: any) => void
+    errorHandler?: (
+      err: Error,
+      req: Request,
+      res: Response,
+      next: NextFunction
+    ) => void
   ) {
     this.instance = express();
     configureApp(this.instance);

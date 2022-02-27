@@ -13,7 +13,7 @@ import { BaseController } from '../core/abstractions';
 export default class BasketController extends BaseController {
   @Get()
   @auth(Role.Admin)
-  async get(req: ModifiedRequest, res: Response) {
+  async getAll(req: ModifiedRequest, res: Response) {
     const baskets: BasketPopulated[] = await basketService.getAllPopulated();
     return res.json(baskets);
   }

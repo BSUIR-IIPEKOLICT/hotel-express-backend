@@ -11,7 +11,7 @@ import { BaseController } from '../core/abstractions';
 @Controller(EndPoint.Orders)
 export default class OrderController extends BaseController {
   @Get()
-  async get(req: ModifiedRequest & GetOrdersDto, res: Response) {
+  async getByBasket(req: ModifiedRequest & GetOrdersDto, res: Response) {
     const orders: OrderPopulated[] = await orderService.getByBasket(
       req.query._basket
     );

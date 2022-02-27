@@ -11,13 +11,13 @@ import { Response } from 'express';
 import { OrderPopulated, RoomPopulated, Type } from '../shared/models';
 import { auth, safeCall } from '../shared/decorators';
 import { EndPoint, Role, Selector } from '../shared/enums';
-import { Controller, Delete, Get, Patch, Post } from '../core/decorators';
+import { Controller, Delete, Get, Post, Put } from '../core/decorators';
 import { BaseController } from '../core/abstractions';
 
 @Controller(EndPoint.Types)
 export default class TypeController extends BaseController {
   @Get()
-  async get(req: ModifiedRequest, res: Response) {
+  async getAll(req: ModifiedRequest, res: Response) {
     const types: Type[] = await typeService.getAll();
     return res.json(types);
   }
@@ -31,7 +31,7 @@ export default class TypeController extends BaseController {
     return res.json(type);
   }
 
-  @Patch(Selector.Id)
+  @Put(Selector.Id)
   @auth(Role.Admin)
   @safeCall()
   async change(req: ModifiedRequest, res: Response) {
